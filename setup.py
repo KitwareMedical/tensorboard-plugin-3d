@@ -1,16 +1,40 @@
+import os
+from pathlib import Path
 import setuptools
+import subprocess
+
+class build_client(setuptools.Command):
+  """Build the frontend"""
+  description = "install and build frontend"
+  user_options = []
+
+  def initialize_options(self):
+    pass
+
+  def finalize_options(self):
+    pass
+
+  def run(self):
+    cwd = Path().absolute()
+    os.chdir(cwd / "tensorboard_plugin_3d/client")
+    subprocess.run(["yarn", "install"], check=True)
+    subprocess.run(["yarn", "build:copy"], check=True)
+    os.chdir(cwd)
 
 setuptools.setup(
-    name="tensorboard_plugin_3d",
-    version="0.0.1",
-    description="TensorBoard plugin 3D.",
-    packages=["tensorboard_plugin_3d"],
-    package_data={
-        "tensorboard_plugin_3d": ["client/**"],
-    },
-    entry_points={
-        "tensorboard_plugins": [
-            "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorboardPlugin3D",
-        ],
-    },
+  name="tensorboard_plugin_3d",
+  version="0.0.1",
+  description="TensorBoard plugin 3D.",
+  cmdclass={
+    "build_client": build_client
+  },
+  packages=["tensorboard_plugin_3d"],
+  package_data={
+    "tensorboard_plugin_3d": ["client/**"],
+  },
+  entry_points={
+    "tensorboard_plugins": [
+      "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorboardPlugin3D",
+    ],
+  },
 )
