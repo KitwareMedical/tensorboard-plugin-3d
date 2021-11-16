@@ -28,16 +28,16 @@ from tensorboard.plugins import base_plugin
 from tensorboard.plugins.scalar import metadata
 
 _SCALAR_PLUGIN_NAME = metadata.PLUGIN_NAME
-_PLUGIN_DIRECTORY_PATH_PART = "/data/plugin/example_raw_scalars/"
+_PLUGIN_DIRECTORY_PATH_PART = "/data/plugin/tensorboard_plugin_3d/"
 
 
-class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
+class TensorboardPlugin3D(base_plugin.TBPlugin):
     """Raw summary example plugin for TensorBoard."""
 
-    plugin_name = "example_raw_scalars"
+    plugin_name = "tensorboard_plugin_3d"
 
     def __init__(self, context):
-        """Instantiates ExampleRawScalarsPlugin.
+        """Instantiates TensorboardPlugin3D.
 
         Args:
           context: A base_plugin.TBContext instance.
@@ -75,7 +75,7 @@ class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
         """Returns a resource file from the static asset directory.
 
         Requests from the frontend have a path in this form:
-        /data/plugin/example_raw_scalars/static/foo
+        /data/plugin/tensorboard_plugin_3d/static/foo
         This serves the appropriate asset: ./static/foo.
 
         Checks the normpath to guard against path traversal attacks.

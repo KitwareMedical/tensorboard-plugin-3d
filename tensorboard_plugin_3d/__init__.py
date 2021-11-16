@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Entry point for the example_raw_scalars plugin package.
+"""Entry point for the tensorboard_3d plugin package.
 
 Private submodules:
   plugin: TensorBoard backend plugin.

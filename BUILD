@@ -15,15 +15,15 @@ sh_test(
     timeout = "moderate",
     srcs = ["smoke_test.sh"],
     # Don't just `glob(["**"])` because `setup.py` creates artifacts
-    # like wheels and a `tensorboard_plugin_example_raw_scalars.egg-info`
+    # like wheels and a `tensorboard_plugin_3d.egg-info`
     # directory, and we want to make sure that those don't interfere with the
     # test.
     data = [
         "setup.py",
         "//tensorboard/pip_package",
     ] + glob([
-        "tensorboard_plugin_example_raw_scalars/*.py",
-        "tensorboard_plugin_example_raw_scalars/static/**",
+        "tensorboard_plugin_3d/*.py",
+        "tensorboard_plugin_3d/client/**",
     ]),
     tags = [
         "manual",  # https://github.com/tensorflow/tensorboard/issues/2987
