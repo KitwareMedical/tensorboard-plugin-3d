@@ -19,19 +19,18 @@ import posixpath
 import unittest
 from unittest import mock
 
-from werkzeug import test
-from werkzeug import wrappers
+from werkzeug import test, wrappers
 
 from tensorboard.plugins import base_plugin
-from tensorboard_plugin_example_raw_scalars import plugin
+from tensorboard_plugin_3d import plugin
 
 
 def is_path_safe(path):
     """Returns the result depending on the plugin's static file handler."""
-    example_plugin = plugin.ExampleRawScalarsPlugin(base_plugin.TBContext())
+    example_plugin = plugin.TensorboardPlugin3D(base_plugin.TBContext())
     serve_static_file = example_plugin._serve_static_file
 
-    client = test.Client(serve_static_file, wrappers.BaseResponse)
+    client = test.Client(serve_static_file, wrappers.Response)
     response = client.get(plugin._PLUGIN_DIRECTORY_PATH_PART + path)
     return response.status_code == 200
 

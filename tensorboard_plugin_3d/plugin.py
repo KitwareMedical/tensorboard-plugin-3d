@@ -1,24 +1,8 @@
-# Copyright 2017 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-"""A sample plugin to demonstrate reading scalars."""
-
-
 import mimetypes
 import os
 
-from werkzeug import wrappers
+import werkzeug
+from werkzeug import exceptions, wrappers
 
 from tensorboard import errors
 from tensorboard import plugin_util
@@ -27,14 +11,23 @@ from tensorboard.data import provider
 from tensorboard.plugins import base_plugin
 from tensorboard.plugins.scalar import metadata
 
-_SCALAR_PLUGIN_NAME = metadata.PLUGIN_NAME
-_PLUGIN_DIRECTORY_PATH_PART = "/data/plugin/example_raw_scalars/"
+def decorate_headers(func):
+    def wrapper(*args, **kwargs):
+        headers = func(*args, **kwargs)
+        headers.extend(TensorboardPlugin3D.headers)
+        return headers
+    return wrapper
+
+exceptions.HTTPException.get_headers = decorate_headers(exceptions.HTTPException.get_headers)
+
+_PLUGIN_DIRECTORY_PATH_PART = "/data/plugin/tensorboard_plugin_3d/"
 
 
-class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
-    """Raw summary example plugin for TensorBoard."""
+class TensorboardPlugin3D(base_plugin.TBPlugin):
+    """TensorBoard plugin for 3D rendering."""
 
-    plugin_name = "example_raw_scalars"
+    plugin_name = "tensorboard_plugin_3d"
+    headers = [("X-Content-Type-Options", "nosniff")]
 
     def __init__(self, context):
         """Instantiates ExampleRawScalarsPlugin.
@@ -46,8 +39,7 @@ class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
 
     def get_plugin_apps(self):
         return {
-            "/scalars": self.scalars_route,
-            "/tags": self._serve_tags,
+            "/client/*": self._serve_static_file,
             "/static/*": self._serve_static_file,
         }
 
@@ -75,7 +67,7 @@ class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
         """Returns a resource file from the static asset directory.
 
         Requests from the frontend have a path in this form:
-        /data/plugin/example_raw_scalars/static/foo
+        /data/plugin/tensorboard_plugin_3d/static/foo
         This serves the appropriate asset: ./static/foo.
 
         Checks the normpath to guard against path traversal attacks.
@@ -88,24 +80,29 @@ class ExampleRawScalarsPlugin(base_plugin.TBPlugin):
             return http_util.Respond(
                 request, "Not found", "text/plain", code=404
             )
-
         resource_path = os.path.join(os.path.dirname(__file__), resource_name)
-        with open(resource_path, "rb") as read_file:
+        try:
             mimetype = mimetypes.guess_type(resource_path)[0]
-            return http_util.Respond(
-                request, read_file.read(), content_type=mimetype
-            )
+            with open(resource_path, "rb") as infile:
+                contents = infile.read()
+        except IOError:
+            raise exceptions.NotFound("404 Not Found")
+        return werkzeug.Response(
+            contents, content_type=mimetype, headers=TensorboardPlugin3D.headers
+        )
 
     def is_active(self):
         """Returns whether there is relevant data for the plugin to process.
-
-        When there are no runs with scalar data, TensorBoard will hide the plugin
-        from the main navigation bar.
+        If there is no any pending run, hide the plugin
         """
         return True
 
     def frontend_metadata(self):
-        return base_plugin.FrontendMetadata(es_module_path="/static/index.js")
+        return base_plugin.FrontendMetadata(
+            es_module_path="/static/index.js",
+            disable_reload=True,
+            tab_name="Tensorboard 3D"
+        )
 
     def scalars_impl(self, ctx, experiment, tag, run):
         """Returns scalar data for the specified tag and run.

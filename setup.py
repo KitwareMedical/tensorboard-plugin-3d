@@ -1,36 +1,40 @@
-# Copyright 2019 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
-
+import os
+from pathlib import Path
 import setuptools
+import subprocess
 
-# Specifying setup.py makes a plugin installable via a Python package manager.
-# `entry_points` is an important field makes plugins discoverable by TensorBoard
-# at runtime.
-# See https://packaging.python.org/specifications/entry-points/
+class build_client(setuptools.Command):
+  """Build the frontend"""
+  description = "install and build frontend"
+  user_options = []
+
+  def initialize_options(self):
+    pass
+
+  def finalize_options(self):
+    pass
+
+  def run(self):
+    cwd = Path().absolute()
+    os.chdir(cwd / "tensorboard_plugin_3d/client")
+    subprocess.run(["yarn", "install"], check=True)
+    subprocess.run(["yarn", "build:copy"], check=True)
+    os.chdir(cwd)
+
 setuptools.setup(
-    name="tensorboard_plugin_example_raw_scalars",
-    version="0.1.0",
-    description="Sample TensorBoard plugin.",
-    packages=["tensorboard_plugin_example_raw_scalars"],
-    package_data={
-        "tensorboard_plugin_example_raw_scalars": ["static/**"],
-    },
-    entry_points={
-        "tensorboard_plugins": [
-            "raw_scalars = tensorboard_plugin_example_raw_scalars.plugin:ExampleRawScalarsPlugin",
-        ],
-    },
+  name="tensorboard_plugin_3d",
+  version="0.0.1",
+  description="TensorBoard plugin 3D.",
+  cmdclass={
+    "build_client": build_client
+  },
+  packages=["tensorboard_plugin_3d"],
+  package_data={
+    "tensorboard_plugin_3d": ["client/**"],
+  },
+  entry_points={
+    "tensorboard_plugins": [
+      "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorboardPlugin3D",
+    ],
+  },
 )

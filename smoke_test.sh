@@ -24,7 +24,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-cp -LR "${TEST_SRCDIR}/org_tensorflow_tensorboard/tensorboard/examples/plugins/example_raw_scalars/" \
+cp -LR "${TEST_SRCDIR}/org_tensorflow_tensorboard/tensorboard/examples/plugins/tensorboard_plugin_3d/" \
     ./example-plugin/
 
 mkdir tensorboard-wheels
@@ -50,9 +50,9 @@ pip uninstall -y tensorboard tb-nightly  # drop conflicting packages
 pip install ./tensorboard-wheels/*py"${py_major_version}"*.whl
 pip install ./example-plugin/dist/*.whl
 
-python -m tensorboard_plugin_example_raw_scalars.demo
+python -m tensorboard_plugin_3d.demo
 
-# Test tensorboard + tensorboard_plugin_example_raw_scalars integration.
+# Test tensorboard + tensorboard_plugin_3d integration.
 mkfifo pipe
 tensorboard \
     --logdir=. \
@@ -62,14 +62,14 @@ tensorboard \
     2>pipe &
 perl -ne 'print STDERR;/http:.*:(\d+)/ and print $1.v10 and exit 0' <pipe >port
 port="$(cat port)"
-curl -fs "http://localhost:${port}/data/plugin/example_raw_scalars/static/index.js" >index.js
-diff -u example-plugin/tensorboard_plugin_example_raw_scalars/static/index.js index.js
+curl -fs "http://localhost:${port}/data/plugin/tensorboard_plugin_3d/static/index.js" >index.js
+diff -u example-plugin/tensorboard_plugin_3d/static/index.js index.js
 curl -fs "http://localhost:${port}/data/plugins_listing" >plugins_listing
 cat plugins_listing; printf '\n'
 
-perl -nle 'print if m{"example_raw_scalars":(?:(?!"enabled").)*+"enabled": *true}' plugins_listing
-grep -qF '"/data/plugin/example_raw_scalars/static/index.js"' plugins_listing
-curl -fs "http://localhost:${port}/data/plugin/example_raw_scalars/tags" >tags
+perl -nle 'print if m{"tensorboard_plugin_3d":(?:(?!"enabled").)*+"enabled": *true}' plugins_listing
+grep -qF '"/data/plugin/tensorboard_plugin_3d/static/index.js"' plugins_listing
+curl -fs "http://localhost:${port}/data/plugin/tensorboard_plugin_3d/tags" >tags
 <<EOF tr -d '\n' | diff -u - tags
 {"demo_logs": ["custom_tag"]}
 EOF
