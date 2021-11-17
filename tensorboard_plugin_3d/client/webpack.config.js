@@ -16,7 +16,11 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.(js|jsx)$/i, use: ['babel-loader'] },
+      {
+        test: /\.(js|jsx)$/i,
+        loader: 'babel-loader',
+        options: { presets: ['@babel/preset-env','@babel/preset-react'] }
+      },
       { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
       { test: /\.(png|jpe?g|gif)$/i, use: ['file-loader'] },
     ]
