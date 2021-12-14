@@ -1,5 +1,8 @@
 import mimetypes
 import os
+import glob
+
+import tensorflow as tf
 
 import werkzeug
 from werkzeug import exceptions, wrappers
@@ -7,6 +10,7 @@ from werkzeug import exceptions, wrappers
 from tensorboard import errors
 from tensorboard import plugin_util
 from tensorboard.backend import http_util
+from tensorboard.backend.event_processing import event_accumulator
 from tensorboard.data import provider
 from tensorboard.plugins import base_plugin
 from tensorboard.plugins.scalar import metadata
@@ -36,12 +40,25 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
           context: A base_plugin.TBContext instance.
         """
         self._data_provider = context.data_provider
+        self._logdir = context.logdir
 
     def get_plugin_apps(self):
         return {
             "/client/*": self._serve_static_file,
             "/static/*": self._serve_static_file,
+            "/images": self._serve_image,
+            "/tags": self._serve_tags,
         }
+
+    @wrappers.Request.application
+    def _serve_image(self, request):
+        response = {'images': []}
+        for eis in self._images:
+            np_arr = tf.io.decode_image(eis).numpy()
+            if np_arr.ndim == 4:
+                np_arr = np_arr[:,:,:,0]
+            response['images'].append({'array': np_arr.tolist()})
+        return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
     def _serve_tags(self, request):
@@ -91,11 +108,24 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             contents, content_type=mimetype, headers=TensorboardPlugin3D.headers
         )
 
+    def _find_all_images(self):
+        self._images = []
+        events = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        for event in events:
+            ea = event_accumulator.EventAccumulator(event)
+            ea.Reload()
+            tags = ea.Tags()['images']
+            for tag in tags:
+                for image in ea.Images(tag):
+                    self._images.append(image.encoded_image_string)
+        return len(self._images)
+
     def is_active(self):
         """Returns whether there is relevant data for the plugin to process.
         If there is no any pending run, hide the plugin
         """
-        return True
+        images_available = self._find_all_images()
+        return images_available
 
     def frontend_metadata(self):
         return base_plugin.FrontendMetadata(
