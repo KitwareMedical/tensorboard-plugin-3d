@@ -24,7 +24,7 @@ class build_client(setuptools.Command):
 
 setuptools.setup(
   name="tensorboard_plugin_3d",
-  version="0.0.1",
+  version="0.0.2",
   description="TensorBoard plugin 3D.",
   cmdclass={
     "build_client": build_client
