@@ -44,8 +44,8 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
     def get_plugin_apps(self):
         return {
-            "/client/*": self._serve_static_file,
-            "/static/*": self._serve_static_file,
+            "/index.js": self._serve_static_file,
+            "/index.html": self._serve_static_file,
             "/images": self._serve_image,
             "/tags": self._serve_tags,
         }
@@ -89,18 +89,19 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
         Checks the normpath to guard against path traversal attacks.
         """
-        static_path_part = request.path[len(_PLUGIN_DIRECTORY_PATH_PART) :]
-        resource_name = os.path.normpath(
-            os.path.join(*static_path_part.split("/"))
-        )
-        if not resource_name.startswith("static" + os.path.sep):
-            return http_util.Respond(
-                request, "Not found", "text/plain", code=404
-            )
-        resource_path = os.path.join(os.path.dirname(__file__), resource_name)
+        filename = os.path.basename(request.path)
+        extension = os.path.splitext(filename)[1]
+        if extension == '.html':
+            mimetype = 'text/html'
+        elif extension == '.css':
+            mimetype = 'text/css'
+        elif extension == '.js':
+            mimetype = 'application/javascript'
+        else:
+            mimetype = 'application/octet-stream'
+        filepath = os.path.join(os.path.dirname(__file__), 'static', filename)
         try:
-            mimetype = mimetypes.guess_type(resource_path)[0]
-            with open(resource_path, "rb") as infile:
+            with open(filepath, 'rb') as infile:
                 contents = infile.read()
         except IOError:
             raise exceptions.NotFound("404 Not Found")
@@ -129,7 +130,7 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
     def frontend_metadata(self):
         return base_plugin.FrontendMetadata(
-            es_module_path="/static/index.js",
+            es_module_path="/index.js",
             disable_reload=True,
             tab_name="Tensorboard 3D"
         )
