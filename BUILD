@@ -23,7 +23,7 @@ sh_test(
         "//tensorboard/pip_package",
     ] + glob([
         "tensorboard_plugin_3d/*.py",
-        "tensorboard_plugin_3d/client/**",
+        "client/**",
     ]),
     tags = [
         "manual",  # https://github.com/tensorflow/tensorboard/issues/2987
