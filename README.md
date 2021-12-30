@@ -1,5 +1,7 @@
 # tensorboard-plugin-3d
 
+[![PyPI](https://img.shields.io/pypi/v/tensorboard-plugin-3d.svg)](https://pypi.python.org/pypi/tensorboard-plugin-3d)
+
 ## Getting started
 
 Copy the directory `tensorboard/examples/plugins/tensorboard_plugin_3d` into a desired folder. In a virtualenv with TensorBoard installed, run:
