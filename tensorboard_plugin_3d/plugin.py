@@ -72,14 +72,13 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         for a specific run+tag. Responds with a map of the form:
         {runName: [tagName, tagName, ...]}
         """
-        ctx = plugin_util.context(request.environ)
-        experiment = plugin_util.experiment_id(request.environ)
-        run_tag_mapping = self._data_provider.list_scalars(
-            ctx,
-            experiment_id=experiment,
-            plugin_name=metadata.PLUGIN_NAME,
-        )
-        run_info = {run: list(tags) for (run, tags) in run_tag_mapping.items()}
+        run_info = {}
+        events = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        for event in events:
+            run = event.split('/')[-1]
+            ea = event_accumulator.EventAccumulator(event)
+            ea.Reload()
+            run_info[run] = ea.Tags()['images']
 
         return http_util.Respond(request, run_info, "application/json")
 
@@ -143,44 +142,8 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             tab_name="Tensorboard 3D"
         )
 
-    def scalars_impl(self, ctx, experiment, tag, run):
-        """Returns scalar data for the specified tag and run.
-
-        For details on how to use tags and runs, see
-        https://github.com/tensorflow/tensorboard#tags-giving-names-to-data
-
-        Args:
-          tag: string
-          run: string
-
-        Returns:
-          A list of ScalarEvents - tuples containing 3 numbers describing entries in
-          the data series.
-
-        Raises:
-          NotFoundError if there are no scalars data for provided `run` and
-          `tag`.
-        """
-        all_scalars = self._data_provider.read_scalars(
-            ctx,
-            experiment_id=experiment,
-            plugin_name=metadata.PLUGIN_NAME,
-            downsample=5000,
-            run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
-        )
-        scalars = all_scalars.get(run, {}).get(tag, None)
-        if scalars is None:
-            raise errors.NotFoundError(
-                "No scalar data for run=%r, tag=%r" % (run, tag)
-            )
-        return [(x.wall_time, x.step, x.value) for x in scalars]
-
     @wrappers.Request.application
-    def scalars_route(self, request):
-        """Given a tag and single run, return array of ScalarEvents."""
-        tag = request.args.get("tag")
-        run = request.args.get("run")
-        ctx = plugin_util.context(request.environ)
-        experiment = plugin_util.experiment_id(request.environ)
-        body = self.scalars_impl(ctx, experiment, tag, run)
+    def _select_images(self, request, run, tag):
+        """Given a tag and single run, return array of ImageEvents."""
+        body = self._encoded_images[run][tag]
         return http_util.Respond(request, body, "application/json")
