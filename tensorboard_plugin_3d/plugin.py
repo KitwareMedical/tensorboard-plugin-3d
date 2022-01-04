@@ -1,4 +1,3 @@
-import mimetypes
 import os
 import glob
 
@@ -7,13 +6,9 @@ import tensorflow as tf
 import werkzeug
 from werkzeug import exceptions, wrappers
 
-from tensorboard import errors
-from tensorboard import plugin_util
 from tensorboard.backend import http_util
 from tensorboard.backend.event_processing import event_accumulator
-from tensorboard.data import provider
 from tensorboard.plugins import base_plugin
-from tensorboard.plugins.scalar import metadata
 
 def decorate_headers(func):
     def wrapper(*args, **kwargs):
@@ -34,7 +29,7 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
     headers = [("X-Content-Type-Options", "nosniff")]
 
     def __init__(self, context):
-        """Instantiates ExampleRawScalarsPlugin.
+        """Instantiates TensorboardPlugin3D.
 
         Args:
           context: A base_plugin.TBContext instance.
