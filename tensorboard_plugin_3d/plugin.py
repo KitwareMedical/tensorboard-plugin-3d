@@ -114,16 +114,20 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         )
 
     def _find_all_images(self):
-        self._images = []
+        self._images = {}
+        self._encoded_images = []
         events = sorted(glob.glob(os.path.join(self._logdir, '*')))
         for event in events:
+            run = event.split('/')[-1]
+            self._images[run] = {}
             ea = event_accumulator.EventAccumulator(event)
             ea.Reload()
             tags = ea.Tags()['images']
             for tag in tags:
-                for image in ea.Images(tag):
-                    self._images.append(image.encoded_image_string)
-        return len(self._images)
+                self._images[run][tag] = [img for img in ea.Images(tag)]
+                self._encoded_images.extend(
+                    [img.encoded_image_string for img in ea.Images(tag)])
+        return len(self._encoded_images)
 
     def is_active(self):
         """Returns whether there is relevant data for the plugin to process.
