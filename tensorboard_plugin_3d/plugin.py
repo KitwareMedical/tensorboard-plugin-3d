@@ -47,12 +47,21 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
     @wrappers.Request.application
     def _serve_image(self, request):
+        self._find_all_images()
+        tag = request.args.get("tag")
+        run = request.args.get("run")
+        if tag and run:
+            return self._select_images(request, run, tag)
         response = {'images': []}
-        for eis in self._images:
-            np_arr = tf.io.decode_image(eis).numpy()
-            if np_arr.ndim == 4:
-                np_arr = np_arr[:,:,:,0]
-            response['images'].append({'array': np_arr.tolist()})
+        for eis in self._encoded_images:
+            if (tf.compat.v1.executing_eagerly()):
+                decoded = tf.io.decode_image(eis, expand_animations=False)
+                np_arr = decoded.numpy()
+                response['images'].append({'array': np_arr.tolist()})
+            else:
+                decoded = tf.io.decode_image(eis, expand_animations=False)
+                np_arr = decoded.eval(session=tf.compat.v1.Session())
+                response['images'].append({'array': np_arr.tolist()})
         return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
