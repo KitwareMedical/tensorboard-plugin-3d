@@ -38,4 +38,5 @@ setuptools.setup(
       "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorboardPlugin3D",
     ],
   },
+  install_requires=["tensorflow"],
 )
