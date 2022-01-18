@@ -22,10 +22,15 @@ class build_client(setuptools.Command):
     subprocess.run(["yarn", "build:copy"], check=True)
     os.chdir(cwd)
 
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+  long_description = f.read()
+
 setuptools.setup(
   name="tensorboard_plugin_3d",
   version="0.0.2",
-  description="TensorBoard plugin 3D.",
+  description="TensorBoard plugin for 3D visualization",
+  long_description=long_description,
   cmdclass={
     "build_client": build_client
   },
@@ -39,4 +44,5 @@ setuptools.setup(
     ],
   },
   install_requires=["tensorflow"],
+  url='https://github.com/KitwareMedical/tensorboard-plugin-3d',
 )
