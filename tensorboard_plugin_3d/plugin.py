@@ -1,4 +1,3 @@
-import mimetypes
 import os
 import glob
 
@@ -7,13 +6,9 @@ import tensorflow as tf
 import werkzeug
 from werkzeug import exceptions, wrappers
 
-from tensorboard import errors
-from tensorboard import plugin_util
 from tensorboard.backend import http_util
 from tensorboard.backend.event_processing import event_accumulator
-from tensorboard.data import provider
 from tensorboard.plugins import base_plugin
-from tensorboard.plugins.scalar import metadata
 
 def decorate_headers(func):
     def wrapper(*args, **kwargs):
@@ -34,7 +29,7 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
     headers = [("X-Content-Type-Options", "nosniff")]
 
     def __init__(self, context):
-        """Instantiates ExampleRawScalarsPlugin.
+        """Instantiates TensorboardPlugin3D.
 
         Args:
           context: A base_plugin.TBContext instance.
@@ -52,12 +47,21 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
     @wrappers.Request.application
     def _serve_image(self, request):
+        self._find_all_images()
+        tag = request.args.get("tag")
+        run = request.args.get("run")
+        if tag and run:
+            return self._select_images(request, run, tag)
         response = {'images': []}
-        for eis in self._images:
-            np_arr = tf.io.decode_image(eis).numpy()
-            if np_arr.ndim == 4:
-                np_arr = np_arr[:,:,:,0]
-            response['images'].append({'array': np_arr.tolist()})
+        for eis in self._encoded_images:
+            if (tf.compat.v1.executing_eagerly()):
+                decoded = tf.io.decode_image(eis, expand_animations=False)
+                np_arr = decoded.numpy()
+                response['images'].append({'array': np_arr.tolist()})
+            else:
+                decoded = tf.io.decode_image(eis, expand_animations=False)
+                np_arr = decoded.eval(session=tf.compat.v1.Session())
+                response['images'].append({'array': np_arr.tolist()})
         return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
@@ -68,14 +72,13 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         for a specific run+tag. Responds with a map of the form:
         {runName: [tagName, tagName, ...]}
         """
-        ctx = plugin_util.context(request.environ)
-        experiment = plugin_util.experiment_id(request.environ)
-        run_tag_mapping = self._data_provider.list_scalars(
-            ctx,
-            experiment_id=experiment,
-            plugin_name=metadata.PLUGIN_NAME,
-        )
-        run_info = {run: list(tags) for (run, tags) in run_tag_mapping.items()}
+        run_info = {}
+        events = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        for event in events:
+            run = event.split('/')[-1]
+            ea = event_accumulator.EventAccumulator(event)
+            ea.Reload()
+            run_info[run] = ea.Tags()['images']
 
         return http_util.Respond(request, run_info, "application/json")
 
@@ -110,16 +113,20 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         )
 
     def _find_all_images(self):
-        self._images = []
+        self._images = {}
+        self._encoded_images = []
         events = sorted(glob.glob(os.path.join(self._logdir, '*')))
         for event in events:
+            run = event.split('/')[-1]
+            self._images[run] = {}
             ea = event_accumulator.EventAccumulator(event)
             ea.Reload()
             tags = ea.Tags()['images']
             for tag in tags:
-                for image in ea.Images(tag):
-                    self._images.append(image.encoded_image_string)
-        return len(self._images)
+                self._images[run][tag] = [img for img in ea.Images(tag)]
+                self._encoded_images.extend(
+                    [img.encoded_image_string for img in ea.Images(tag)])
+        return len(self._encoded_images)
 
     def is_active(self):
         """Returns whether there is relevant data for the plugin to process.
@@ -135,44 +142,8 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             tab_name="Tensorboard 3D"
         )
 
-    def scalars_impl(self, ctx, experiment, tag, run):
-        """Returns scalar data for the specified tag and run.
-
-        For details on how to use tags and runs, see
-        https://github.com/tensorflow/tensorboard#tags-giving-names-to-data
-
-        Args:
-          tag: string
-          run: string
-
-        Returns:
-          A list of ScalarEvents - tuples containing 3 numbers describing entries in
-          the data series.
-
-        Raises:
-          NotFoundError if there are no scalars data for provided `run` and
-          `tag`.
-        """
-        all_scalars = self._data_provider.read_scalars(
-            ctx,
-            experiment_id=experiment,
-            plugin_name=metadata.PLUGIN_NAME,
-            downsample=5000,
-            run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
-        )
-        scalars = all_scalars.get(run, {}).get(tag, None)
-        if scalars is None:
-            raise errors.NotFoundError(
-                "No scalar data for run=%r, tag=%r" % (run, tag)
-            )
-        return [(x.wall_time, x.step, x.value) for x in scalars]
-
     @wrappers.Request.application
-    def scalars_route(self, request):
-        """Given a tag and single run, return array of ScalarEvents."""
-        tag = request.args.get("tag")
-        run = request.args.get("run")
-        ctx = plugin_util.context(request.environ)
-        experiment = plugin_util.experiment_id(request.environ)
-        body = self.scalars_impl(ctx, experiment, tag, run)
+    def _select_images(self, request, run, tag):
+        """Given a tag and single run, return array of ImageEvents."""
+        body = self._encoded_images[run][tag]
         return http_util.Respond(request, body, "application/json")
