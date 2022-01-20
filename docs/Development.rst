@@ -4,6 +4,14 @@ Development
 
 Getting started
 ---------------
+Node.js and Yarn are required for building and developing the client.
+
+    - Install `Node.js`_
+    - Install `Yarn`_ package manager
+
+.. _Node.js: https://nodejs.org/en/download/
+.. _Yarn: https://yarnpkg.com/getting-started/install
+
 Clone the repository:
 
     .. code-block::
