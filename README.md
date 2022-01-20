@@ -1,35 +1,18 @@
-# tensorboard-plugin-3d
+TensorboardPlugin3D - 3D Tensor Visualization
+===============================================
 
 [![PyPI](https://img.shields.io/pypi/v/tensorboard-plugin-3d.svg)](https://pypi.python.org/pypi/tensorboard-plugin-3d)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
 
-## Getting started
+Introduction
+------------
 
-Copy the directory `tensorboard/examples/plugins/tensorboard_plugin_3d` into a desired folder. In a virtualenv with TensorBoard installed, run:
+TensorboardPlugin3D is an open-source Tensorboard plugin that supports
+visualizing 3D output within the Tensorboard application, JupyterLab, and
+Google Colab.
 
-```
-python setup.py develop
-```
+Documentation
+-------------
 
-or if you have changes to the client:
-
-```
-python setup.py build_client develop
-```
-
-This will install and build the frontend and link the plugin into your virtualenv. Then, just run
-
-```
-mkdir /tmp/test
-tensorboard --logdir /tmp/test
-```
-
-and open TensorBoard to see the tensorboard plugin 3D tab.
-
-To uninstall, you can run
-
-```
-python setup.py develop --uninstall
-```
-
-to unlink the plugin from your virtualenv, after which you can also delete the `tensorboard_plugin_3d.egg-info/` directory that the original `setup.py` invocation created.
+See the [documentation](https://tensorboardplugin3d.readthedocs.io/en/main/)
+for a guide on getting started.
