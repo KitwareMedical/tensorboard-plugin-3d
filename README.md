@@ -14,5 +14,5 @@ Google Colab.
 Documentation
 -------------
 
-See the [documentation](https://tensorboardplugin3d.readthedocs.io/en/main/)
+See the [documentation](https://tensorboardplugin3d.readthedocs.io/en/latest/)
 for a guide on getting started.
