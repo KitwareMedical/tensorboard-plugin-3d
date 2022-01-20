@@ -7,6 +7,7 @@ import MainInterface from 'itk-viewer-material-ui/src/Main/MainInterface'
 import LayersInterface from 'itk-viewer-material-ui/src/Layers/LayersInterface'
 import ImagesInterface from 'itk-viewer-material-ui/src/Images/ImagesInterface'
 import WidgetsInterface from 'itk-viewer-material-ui/src/Widgets/WidgetsInterface'
+import './style.css'
 
 function modifiedCreateInterface(context) {
   context.viewContainers = new Map()
