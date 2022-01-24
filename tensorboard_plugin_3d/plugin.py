@@ -55,12 +55,15 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         response = {'images': []}
         for eis in self._encoded_images:
             if (tf.compat.v1.executing_eagerly()):
-                decoded = tf.io.decode_image(eis, expand_animations=False)
-                np_arr = decoded.numpy()
+                np_arr = tf.io.decode_image(eis).numpy()
+                if np_arr.ndim == 4:
+                    np_arr = np_arr[:,:,:,0]
                 response['images'].append({'array': np_arr.tolist()})
             else:
-                decoded = tf.io.decode_image(eis, expand_animations=False)
+                decoded = tf.io.decode_image(eis)
                 np_arr = decoded.eval(session=tf.compat.v1.Session())
+                if np_arr.ndim == 4:
+                    np_arr = np_arr[:,:,:,0]
                 response['images'].append({'array': np_arr.tolist()})
         return http_util.Respond(request, response, "application/json")
 
