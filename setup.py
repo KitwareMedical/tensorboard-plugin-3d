@@ -28,7 +28,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setuptools.setup(
   name="tensorboard_plugin_3d",
-  version="0.0.2",
+  version="0.1.1",
   description="TensorBoard plugin for 3D visualization",
   long_description=long_description,
   cmdclass={
