@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
     - name: Build pip package
       run: |
         python setup.py build_client sdist bdist_wheel
