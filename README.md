@@ -12,6 +12,15 @@ TensorboardPlugin3D is an open-source Tensorboard plugin that supports
 visualizing 3D output within the Tensorboard application, JupyterLab, and
 Google Colab.
 
+Installation
+------------
+
+Install the [PyPI package](https://pypi.python.org/pypi/tensorboard-plugin-3d):
+
+```sh
+pip install tensorboard-plugin-3d
+```
+
 Monai Notebook Examples
 -----------------
 The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existing PyTorch medical DL program and demonstrates using TensorboardPlugin3D to view either an image with a label (shown above) or just an image, using the model output. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
