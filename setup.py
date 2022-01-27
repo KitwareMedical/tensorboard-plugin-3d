@@ -31,6 +31,7 @@ setuptools.setup(
   version="0.1.1",
   description="TensorBoard plugin for 3D visualization",
   long_description=long_description,
+  long_description_content_type='text/markdown',
   cmdclass={
     "build_client": build_client
   },
