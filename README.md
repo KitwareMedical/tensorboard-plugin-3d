@@ -21,14 +21,14 @@ Install the [PyPI package](https://pypi.python.org/pypi/tensorboard-plugin-3d):
 pip install tensorboard-plugin-3d
 ```
 
-Monai Notebook Examples
+MONAI Notebook Examples
 -----------------
-The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existing PyTorch medical DL program and demonstrates using TensorboardPlugin3D to view either an image with a label (shown above) or just an image, using the model output. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
-![Spleen Image with Label](demo/notebook/spleen_with_label.png)
-![Spleen Output](demo/notebook/spleen_output.png)
+The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existing PyTorch medical DL program and demonstrates using TensorboardPlugin3D to view an image with a label to show the input data (shown in the first image) or to compare the model output with the input. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
+![Spleen Image with Label](https://github.com/KitwareMedical/tensorboard-plugin-3d/blob/main/docs/images/spleen_with_label.png?raw=true)
+![Spleen Output](https://github.com/KitwareMedical/tensorboard-plugin-3d/blob/main/docs/images/label_with_output.gif?raw=true)
 
 The UNet Segmentation 3D Ignite notebook provides a simple, fast-running notebook with demo data. If you're looking for a quick way to get started and see the plugin in action this is a great place to start. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/unet_segmentation_3d_ignite.ipynb)
-![UNet Output](demo/notebook/unet_output.png)
+![UNet Output](https://github.com/KitwareMedical/tensorboard-plugin-3d/blob/main/docs/images/unet.gif?raw=true)
 
 Documentation
 -------------

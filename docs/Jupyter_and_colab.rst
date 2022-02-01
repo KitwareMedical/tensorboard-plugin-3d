@@ -24,9 +24,15 @@ tensorboard widget within either JupyterLab or Colab.
         %load_ext tensorboard
         %tensorboard --logdir=$tb_dir
 
-See the `spleen_segmentation`_ notebook for an example of viewing an image both
-with or without a label with real world data, or the `unet_segmentation`_ for a
-faster demonstration using sample data.
+.. image:: images/spleen_with_label.png
+   :alt: Spleen with Label
+
+See the `spleen_segmentation`_ notebook for an example of viewing both the
+input data and output model from real world data, or the `unet_segmentation`_
+for a faster demonstration using sample data.
 
 .. _spleen_segmentation: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb
 .. _unet_segmentation: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/unet_segmentation_3d_ignite.ipynb
+
+.. image:: images/unet.gif
+   :alt: UNet Demo
