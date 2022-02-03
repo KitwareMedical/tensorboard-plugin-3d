@@ -16,6 +16,9 @@ To install the stable python package:
 
          $ pip install tensorboard_plugin_3d
 
+.. image:: images/label_with_output.gif
+   :alt: Output model with input
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
