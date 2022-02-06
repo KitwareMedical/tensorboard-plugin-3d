@@ -31,6 +31,8 @@ The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existin
 The UNet Segmentation 3D Ignite notebook provides a simple, fast-running notebook with demo data. If you're looking for a quick way to get started and see the plugin in action this is a great place to start. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/unet_segmentation_3d_ignite.ipynb)
 ![UNet Output](https://github.com/KitwareMedical/tensorboard-plugin-3d/blob/main/docs/images/unet.gif?raw=true)
 
+The BRATS Segmentation 3D notebook demonstrates brain tumor 3D segmentation with MONAI. The tutorial shows how to construct a training workflow of multi-labels segmentation task. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/brats_segmentation_3d.ipynb)
+
 Documentation
 -------------
 
