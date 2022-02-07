@@ -19,8 +19,6 @@ def decorate_headers(func):
 
 exceptions.HTTPException.get_headers = decorate_headers(exceptions.HTTPException.get_headers)
 
-_PLUGIN_DIRECTORY_PATH_PART = "/data/plugin/tensorboard_plugin_3d/"
-
 
 class TensorboardPlugin3D(base_plugin.TBPlugin):
     """TensorBoard plugin for 3D rendering."""
@@ -38,6 +36,9 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         self._logdir = context.logdir
 
     def get_plugin_apps(self):
+        """
+        Returns a map of the available endpoints to their respective method.
+        """
         return {
             "/index.js": self._serve_static_file,
             "/index.html": self._serve_static_file,
@@ -47,24 +48,39 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
 
     @wrappers.Request.application
     def _serve_image(self, request):
+        """
+        If the run and tag are provided return the associated image(s).
+        Otherwise return the most recent image and its label if it has one.
+        """
         self._find_all_images()
         tag = request.args.get("tag")
         run = request.args.get("run")
         if tag and run:
-            return self._select_images(request, run, tag)
-        response = {'images': []}
-        for eis in self._encoded_images:
+            eis_list = self._select_images(request, run, tag)
+            data = {tag: eis_list}
+        else:
+            # Grab the most recent run (event file)
+            data = self._find_most_recent()
+
+        response = {}
+        for tag, images in data.items():
+            # There could be more than one image with the latest tag.
+            # Grab the most recent.
+            eis = images[-1].encoded_image_string
+
+            # Default is to run with eager execution but users still have the
+            # option to select graph execution so we will handle that case also
             if (tf.compat.v1.executing_eagerly()):
                 np_arr = tf.io.decode_image(eis).numpy()
-                if np_arr.ndim == 4:
-                    np_arr = np_arr[:,:,:,0]
-                response['images'].append({'array': np_arr.tolist()})
             else:
                 decoded = tf.io.decode_image(eis)
                 np_arr = decoded.eval(session=tf.compat.v1.Session())
-                if np_arr.ndim == 4:
-                    np_arr = np_arr[:,:,:,0]
-                response['images'].append({'array': np_arr.tolist()})
+            if np_arr.ndim == 4:
+                np_arr = np_arr[:,:,:,0]
+
+            # Use the tag to determine if it is an image or label
+            key = 'label' if tag.startswith('label') else 'image'
+            response[f'{key}'] = np_arr.tolist()
         return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
@@ -115,25 +131,39 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             contents, content_type=mimetype, headers=TensorboardPlugin3D.headers
         )
 
+    def _find_most_recent(self):
+        newest = -1
+        for tags in self._all_images.values():
+            times = [i.wall_time for v in tags.values() for i in v]
+            if newest < (new_time := max(times)):
+                most_recent = tags
+                newest = new_time
+        return most_recent
+
     def _find_all_images(self):
-        self._images = {}
-        self._encoded_images = []
-        events = sorted(glob.glob(os.path.join(self._logdir, '*')))
-        for event in events:
+        """
+        Find all available images. Return False if no images are found,
+        otherwise return True.
+        """
+        self._all_images = {}
+        images_found = False
+        event_files = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        for event in event_files:
             run = event.split('/')[-1]
-            self._images[run] = {}
             ea = event_accumulator.EventAccumulator(event)
             ea.Reload()
             tags = ea.Tags()['images']
             for tag in tags:
-                self._images[run][tag] = [img for img in ea.Images(tag)]
-                self._encoded_images.extend(
-                    [img.encoded_image_string for img in ea.Images(tag)])
-        return len(self._encoded_images)
+                if ea.Images(tag):
+                    self._all_images.setdefault(run, {})
+                    self._all_images[run][tag] = ea.Images(tag)
+                    if not images_found and ea.Images(tag):
+                        images_found = True
+        return images_found
 
     def is_active(self):
         """Returns whether there is relevant data for the plugin to process.
-        If there is no any pending run, hide the plugin
+        If there is no pending run, hide the plugin
         """
         images_available = self._find_all_images()
         return images_available
@@ -146,7 +176,6 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         )
 
     @wrappers.Request.application
-    def _select_images(self, request, run, tag):
-        """Given a tag and single run, return array of ImageEvents."""
-        body = self._encoded_images[run][tag]
-        return http_util.Respond(request, body, "application/json")
+    def _select_images(self, run, tag):
+        """Given a tag and single run, return the associated image(s)."""
+        return self._all_images[run][tag]

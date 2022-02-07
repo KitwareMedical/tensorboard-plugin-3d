@@ -32,13 +32,10 @@ function encodeScijsArray(array){
 
 async function createViewer() {
   const img_data = await fetchJSON('../tensorboard_plugin_3d/images').then(response => {
-    let image_data = {image: encodeScijsArray(ndarraypack(response.images[0].array))}
-    if (response.images.length > 1) {
-      image_data.labelImage = encodeScijsArray(ndarraypack(response.images[1].array))
+    let image_data = {image: encodeScijsArray(ndarraypack(response.image))}
+    if (response.label) {
+      image_data.labelImage = encodeScijsArray(ndarraypack(response.label))
     }
-    response.images.forEach((img) => {
-      encodeScijsArray(ndarraypack(img.array))
-    })
     return image_data
   })
   window.itkVtkViewer.createViewer(container,

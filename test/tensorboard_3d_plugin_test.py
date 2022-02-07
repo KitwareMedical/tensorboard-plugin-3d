@@ -98,7 +98,7 @@ class Tensorboard3DPluginTest(tf.test.TestCase):
 
         # Verify that the correct entries are returned.
         entries = self._DeserializeResponse(response.get_data())
-        self.assertEqual(13, len(entries['images']))
+        self.assertEqual(sorted(list(entries.keys())), ['image', 'label'])
 
     def testRunsRoute(self):
         """Tests that the /runs route offers the correct run to tag mapping."""
@@ -106,8 +106,8 @@ class Tensorboard3DPluginTest(tf.test.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertDictEqual(
             {
-                "transform": ["output_HWD/image"],
-                "unet": ["input_0_HWD/image", "input_1_HWD/image", "output_HWD/image"],
+                'image_and_label': ['image_HWD/image', 'label_HWD/image'],
+                'image_only': ['image_HWD/image']
             },
             self._DeserializeResponse(response.get_data()),
         )
