@@ -54,8 +54,8 @@ class Tensorboard3DPluginTest(tf.test.TestCase):
         # Start a server with the plugin.
         multiplexer = event_multiplexer.EventMultiplexer(
             {
-                "transform": f'{self.log_dir}/transform',
-                "unet": f'{self.log_dir}/unet',
+                "image_and_label": f'{self.log_dir}/image_and_label',
+                "image_only": f'{self.log_dir}/image_only',
             }
         )
         multiplexer.Reload()
