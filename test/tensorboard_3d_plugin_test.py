@@ -86,14 +86,17 @@ class Tensorboard3DPluginTest(tf.test.TestCase):
         """Tests that the plugin offers the correct routes."""
         self.assertIsInstance(self.routes["/index.js"], collections.abc.Callable)
         self.assertIsInstance(self.routes["/index.html"], collections.abc.Callable)
-        self.assertIsInstance(self.routes["/images"], collections.abc.Callable)
+        self.assertIsInstance(self.routes["/images/current"], collections.abc.Callable)
+        self.assertIsInstance(self.routes["/images/count"], collections.abc.Callable)
         self.assertIsInstance(self.routes["/tags"], collections.abc.Callable)
+        self.assertIsInstance(self.routes["/saveState"], collections.abc.Callable)
+        self.assertIsInstance(self.routes["/fetchState"], collections.abc.Callable)
 
 
     def testNewStyleImagesRouteEager(self):
         """Tests that the /images routes returns correct data."""
         self.plugin.is_active()
-        response = self.server.get("/data/plugin/tensorboard_plugin_3d/images")
+        response = self.server.get("/data/plugin/tensorboard_plugin_3d/images/current")
         self.assertEqual(200, response.status_code)
 
         # Verify that the correct entries are returned.
@@ -111,6 +114,61 @@ class Tensorboard3DPluginTest(tf.test.TestCase):
             },
             self._DeserializeResponse(response.get_data()),
         )
+
+    def testImagesCount(self):
+        self.plugin.is_active()
+        response = self.server.get("/data/plugin/tensorboard_plugin_3d/images/count")
+        self.assertEqual(200, response.status_code)
+        count = self._DeserializeResponse(response.get_data())
+        self.assertEqual(count['current'], 1)
+        self.assertEqual(count['total'], 2)
+
+    def testStateSaveAndFetch(self):
+        self.plugin.is_active()
+        test_state = {
+            'annotationsEnabled': True,
+            'axesEnabled': False,
+            'actorContext': {
+                'blendMode': 'composite',
+                'volumeSampleDistance': 0.2
+            }
+        }
+        response = self.server.put(
+            "/data/plugin/tensorboard_plugin_3d/saveState",
+            data=json.dumps(test_state),
+            headers={'Content-type': 'application/json'}
+        )
+        self.assertEqual(200, response.status_code)
+        response = self.server.get("/data/plugin/tensorboard_plugin_3d/fetchState")
+        self.assertEqual(200, response.status_code)
+        self.assertDictEqual(test_state, self._DeserializeResponse(response.get_data()))
+        updates = {
+            'annotationsEnabled': False,
+            'actorContext': {
+                'blendMode': 'maximum',
+            }
+        }
+        response = self.server.put(
+            "/data/plugin/tensorboard_plugin_3d/saveState",
+            data=json.dumps(updates),
+            headers={'Content-type': 'application/json'}
+        )
+        self.assertEqual(200, response.status_code)
+        response = self.server.get("/data/plugin/tensorboard_plugin_3d/fetchState")
+        self.assertEqual(200, response.status_code)
+        self.assertDictEqual(
+            {
+                'annotationsEnabled': False,
+                'axesEnabled': False,
+                'actorContext': {
+                    'blendMode': 'maximum',
+                    'volumeSampleDistance': 0.2
+                }
+            },
+            self._DeserializeResponse(response.get_data())
+        )
+
+
 
 
 if __name__ == "__main__":
