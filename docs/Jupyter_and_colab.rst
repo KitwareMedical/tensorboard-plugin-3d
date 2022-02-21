@@ -12,26 +12,38 @@ To install the TensorboardPlugin3D python package inside the notebook:
 
 Usage
 -----
-The plugin currently looks at the most recent image available in the log directory
-and visualizes it. If two images are available for the most recent run and one
-of them is tagged "label" it will be treated as such. Each image or image/label
-pair can be written to its own log directory to make it simple to switch
-between views. The directory to be used can then be set and visualized with the
-tensorboard widget within either JupyterLab or Colab.
 
-To break down some examples of options for writing out images we can look at
-the UNet notebook:
+This documentation uses the ``spleen_segmentation_3d`` tutorial notebook
+provided by MONAI as the starting point and demonstrates how to expand on the
+notebook to take advantage of the 3D plugin with only a few additional lines.
+See the bottom of this page for links to available example notebooks.
 
-.. image:: images/unet_notebook.png
-   :alt: UNet Notebook Cells
+Plot Images
+###########
 
-In the first cell we are selecting the data that we would like to view, in this
-case the first input image and label as well as the first output model. The
-output model is then written out in the final line of the first cell shown:
+MONAI provides ``plot_2d_or_3d_image`` and the related ignite handler to plot
+the 3D image in TensorBoard. Originally the output model and input image and
+label could only be visualized with matplotlib. This limited the view to a
+single slice though.
 
-    .. code-block::
+.. image:: images/original_spleen_cell.png
+   :alt: Original Spleen Visualization Cells
 
-        plot_2d_or_3d_image(data=val_outputs, step=0, writer=SummaryWriter(log_dir=log_dir), frame_dim=-1, tag="image")
+For the purposes of this tutorial we will write out multiple views to get an
+idea of the different ways we can visualize data. Outside of the loop (above
+the ``torch.no_grad()`` call) we will create directories for each combination
+of input and output we would like to view. TensorBoard takes in a directory as
+the ``logdir`` to read from, so creating separate directories simplifies
+selecting which data to display.
+
+.. image:: images/create_directories.png
+    :alt: Create direct for TensorBoard plots
+
+Within the loop we can then add the calls to ``plot_2d_or_3d_image`` to create
+the event files that TensorBoard will need.
+
+.. image:: images/write_tensorboard_images.png
+    :alt: Plot images for TensorBoard
 
 The call to ``plot_2d_or_3d_image`` takes several parameters:
 
@@ -54,46 +66,54 @@ The call to ``plot_2d_or_3d_image`` takes several parameters:
         Tag of the plotted image on TensorBoard. This is used by the plugin to
         determine which is an image and which is a label.
 
-Some options for writing out data include:
-    1. Creating a new ``SummaryWriter`` object.
+Of the parameters passed to ``plot_2d_or_3d_image`` there are three especially
+important pieces to plotting the images so that they work with the plugin:
 
-    Use a hierarchical folder structure to compare between runs easily. In the
-    UNet example we are writing the output image to ``{root_dir}/logs``, so if
-    we wanted to write out the output along with the input next we would point
-    to a new directory.
+    1. The ``SummaryWriter``. A new SummaryWriter should be created for each
+       image or image/label pair, even if all of the data will be written to
+       the same directory. This creates a new event file for each image or pair
+       of images which is what the plugin uses to determine which data to
+       associate with what.
+    2. The ``data``. As explained above, the data that is passed in is expected
+       to have ``NCHW[D]`` dimensions. If the data does not match this shape,
+       PyTorch provides an ``unsqueeze`` method that can be used to insert a
+       dimension of size 1 inserted at the specified position.
+    3. The ``tag``. This must be set to either ``image`` or ``label`` to
+       indicate the role of the data. Without this images may not be shown with
+       their label or may not be displayed at all.
 
-        .. code-block::
+Select Images to View
+#####################
 
-            new_dir = os.path.join(root_dir, "output_and_input")
-            sw = SummaryWriter(log_dir=new_dir)
-            plot_2d_or_3d_image(data=val_outputs, step=0, writer=sw, frame_dim=-1, tag="image")
-            plot_2d_or_3d_image(data=val_data[1], step=0, writer=sw, frame_dim=-1, tag="label")
+To select which images to view simply pass the directory to the TensorBoard
+``logdir`` flag.
 
-    This allows us to simply pass in a new ``logdir`` for TensorBoard to view this data.
+.. code-block::
 
-        .. code-block::
+    %load_ext tensorboard
+    %tensorboard --logdir=$output_with_label
 
-            %tensorboard --logdir=$new_dir
+The plugin will display the most recent image data first. Each of the three
+directories created should contain three images or image/label combinations, so
+pointing to any one of them will provide three images that can be viewed. If,
+however, the ``logdir`` were set to be ``root_dir`` instead, only the most 
+recent from each of the child directories would be available to view.
 
-    2. Re-using an existing ``SummaryWriter``.
+Switching Images
+################
 
-    When the ``SummaryWriter`` is re-used images are appended to an existing
-    run (event file). The most recent addition(s) will be what is shown.
-    This is a trickier option since only the most recent is shown and there
-    is no simple way to going back to displaying the image(s) that were
-    previously written. At this point it is recommended to take the
-    approach outlined in item 1 above.
+If multiple images are available within the selected ``logdir`` there will be
+an option to toggle between them or jump to a specific image.
 
-Important to note: The ``tag`` parameter is optional for ``plot_2d_or_3d_image``
-but not for our purposes. All images without a ``label`` tag are assumed to be
-separate images to be loaded individually.
+.. image:: images/toggle_data.png
+    :alt: Toggle Image Options
 
+Any and all settings that are applied to an image are carried over to the next
+image as well. This allows you to get the vis settings just right before
+flipping through available images and comparing results.
 
-.. image:: images/spleen_with_label.png
-   :alt: Spleen with Label
-
-Examples
---------
+Example Notebooks
+-----------------
 See the `spleen_segmentation`_ notebook for an example of viewing both the
 input data and output model from real world data, or the `unet_segmentation`_
 for a faster demonstration using sample data.
