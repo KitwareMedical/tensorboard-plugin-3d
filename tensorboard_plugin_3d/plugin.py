@@ -34,6 +34,9 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         """
         self._data_provider = context.data_provider
         self._logdir = context.logdir
+        self.current_run = 0
+        self._client_state = {}
+        self._all_runs = []
 
     def get_plugin_apps(self):
         """
@@ -42,9 +45,20 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         return {
             "/index.js": self._serve_static_file,
             "/index.html": self._serve_static_file,
-            "/images": self._serve_image,
+            "/images/current": self._serve_image,
+            "/images/count": self._serve_image_count,
             "/tags": self._serve_tags,
+            "/saveState": self._save_state,
+            "/fetchState": self._serve_state,
         }
+
+    @wrappers.Request.application
+    def _serve_image_count(self, request):
+        response = {
+            'current': self.current_run + 1,
+            'total': len(self._all_runs)
+        }
+        return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
     def _serve_image(self, request):
@@ -55,9 +69,12 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         self._find_all_images()
         tag = request.args.get("tag")
         run = request.args.get("run")
+        idx = request.args.get("idx")
         if tag and run:
             eis_list = self._select_images(request, run, tag)
             data = {tag: eis_list}
+        elif idx:
+            data = self._find_next_images(idx)
         else:
             # Grab the most recent run (event file)
             data = self._find_most_recent()
@@ -79,8 +96,10 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
                 np_arr = np_arr[:,:,:,0]
 
             # Use the tag to determine if it is an image or label
-            key = 'label' if tag.startswith('label') else 'image'
-            response[f'{key}'] = np_arr.tolist()
+            if tag.startswith('image'):
+                response['image'] = np_arr.tolist()
+            elif tag.startswith('label'):
+                response[f'label'] = np_arr.tolist()
         return http_util.Respond(request, response, "application/json")
 
     @wrappers.Request.application
@@ -97,8 +116,8 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             run = event.split('/')[-1]
             ea = event_accumulator.EventAccumulator(event)
             ea.Reload()
-            run_info[run] = ea.Tags()['images']
-
+            if tags := ea.Tags()['images']:
+                run_info[run] = tags
         return http_util.Respond(request, run_info, "application/json")
 
     @wrappers.Request.application
@@ -131,13 +150,19 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
             contents, content_type=mimetype, headers=TensorboardPlugin3D.headers
         )
 
+    def _find_next_images(self, idx):
+        self.current_run = (int(idx) - 1) % len(self._all_runs)
+        run = self._all_runs[self.current_run]
+        return self._all_images[run]
+
     def _find_most_recent(self):
         newest = -1
-        for tags in self._all_images.values():
+        for run, tags in self._all_images.items():
             times = [i.wall_time for v in tags.values() for i in v]
             if newest < (new_time := max(times)):
                 most_recent = tags
                 newest = new_time
+                self.current_run = self._all_runs.index(run)
         return most_recent
 
     def _find_all_images(self):
@@ -157,8 +182,10 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
                 if ea.Images(tag):
                     self._all_images.setdefault(run, {})
                     self._all_images[run][tag] = ea.Images(tag)
-                    if not images_found and ea.Images(tag):
+                    if ea.Images(tag) and (
+                        tag.startswith('image') or tag.startswith('label')):
                         images_found = True
+        self._all_runs = list(self._all_images.keys())
         return images_found
 
     def is_active(self):
@@ -179,3 +206,19 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
     def _select_images(self, run, tag):
         """Given a tag and single run, return the associated image(s)."""
         return self._all_images[run][tag]
+
+    @wrappers.Request.application
+    def _save_state(self, request):
+        def parse_state(input, output):
+            for key, value in input.items():
+                if key == 'actorContext':
+                    output.setdefault('actorContext', {})
+                    parse_state(value, output['actorContext'])
+                else:
+                    output[key] = value
+        parse_state(request.get_json(), self._client_state)
+        return http_util.Respond(request, self._client_state, "application/json")
+
+    @wrappers.Request.application
+    def _serve_state(self, request):
+        return http_util.Respond(request, self._client_state, "application/json")

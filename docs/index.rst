@@ -33,3 +33,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. image:: images/spleen_with_label.png
+   :alt: Spleen with Label

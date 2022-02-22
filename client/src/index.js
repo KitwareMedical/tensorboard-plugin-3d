@@ -1,6 +1,6 @@
 import materialUIMachineOptions from 'itk-viewer-material-ui/src/materialUIMachineOptions'
 import modifiedCreateInterface from './main'
-import ndarraypack from 'ndarray-pack'
+import { encodeScijsArray, fetchJSON } from './utils'
 
 const uiMachineOptions = { ...materialUIMachineOptions }
 
@@ -11,30 +11,11 @@ uiMachineOptions.actions = uiMachineActions
 
 const container = document.querySelector('.content')
 
-async function fetchJSON(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    return null;
-  }
-  const data = response.json();
-  return data;
-}
-
-function encodeScijsArray(array){
-  const encoded = {
-    _rtype: 'ndarray',
-    _rdtype: array.dtype,
-    _rshape: array.shape,
-    _rvalue: array.data,
-  }
-  return encoded
-}
-
 async function createViewer() {
-  const img_data = await fetchJSON('../tensorboard_plugin_3d/images').then(response => {
-    let image_data = {image: encodeScijsArray(ndarraypack(response.image))}
+  const img_data = await fetchJSON('../tensorboard_plugin_3d/images/current').then(response => {
+    let image_data = {image: encodeScijsArray(response.image)}
     if (response.label) {
-      image_data.labelImage = encodeScijsArray(ndarraypack(response.label))
+      image_data.labelImage = encodeScijsArray(response.label)
     }
     return image_data
   })

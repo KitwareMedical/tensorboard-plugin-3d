@@ -1,3 +1,58 @@
+.css-1lpukdo {
+  padding: 0px !important;
+  background: rgba(128, 128, 128, 0.5) !important;
+  border: solid 3px rgba(255, 255, 255, 0.3) !important;
+  width: 125px;
+}
+
+.css-fi4tqy {
+  padding: 0px !important;
+}
+
+.css-q44vsa::before {
+  border-bottom: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.imageInput {
+  width: 50px;
+  text-align-last: center;
+  margin: 0px !important;
+}
+
+.imageSelector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageToggle {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 3px;
+  margin: 2px 0px;
+  align-items: center;
+}
+
+.layerIcon {
+  padding-left: 0px;
+}
+
+.layerLabelCommon {
+  margin-right: 5px;
+}
+
+.layersUIGroup {
+  margin-left: 0px;
+  width: 100%;
+  max-width: inherit;
+}
+
 .MuiDrawer-paper {
   top: 35px !important;
+  max-width: 400px;
 }

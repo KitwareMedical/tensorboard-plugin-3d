@@ -29,6 +29,6 @@ path to the test data:
 
 .. code-block::
 
-    $ tensorboard --logdir ../test/data/transform
+    $ tensorboard --logdir ~/path/to/logdir/test/data
 
 Open Tensorboard and select the ``Tensorboard 3D`` tab.

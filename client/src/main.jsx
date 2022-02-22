@@ -4,10 +4,11 @@ import 'itk-viewer-material-ui/src/style.css'
 import CollapseUIButton from 'itk-viewer-material-ui/src/CollapseUIButton'
 import Panel from 'itk-viewer-material-ui/src/Panel'
 import MainInterface from 'itk-viewer-material-ui/src/Main/MainInterface'
-import LayersInterface from 'itk-viewer-material-ui/src/Layers/LayersInterface'
 import ImagesInterface from 'itk-viewer-material-ui/src/Images/ImagesInterface'
+import ImageSelector from './ImageSelector'
 import WidgetsInterface from 'itk-viewer-material-ui/src/Widgets/WidgetsInterface'
 import './style.css'
+import LayersInterface from 'itk-viewer-material-ui/src/Layers/LayersInterface'
 
 function modifiedCreateInterface(context) {
   context.viewContainers = new Map()
@@ -33,6 +34,7 @@ function modifiedCreateInterface(context) {
       <CollapseUIButton service={ context.service }/>
       <Panel service={ context.service }>
         <MainInterface />
+        <ImageSelector />
         <LayersInterface />
         <WidgetsInterface />
         <ImagesInterface />
