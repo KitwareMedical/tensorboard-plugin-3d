@@ -72,21 +72,36 @@ function ImageSelector(props) {
   }
 
   return (
-    <div className={(!lastAddedData || imageCount.total < 2) && "hidden"}>
+    <div className={(!lastAddedData || imageCount.total < 2) ? "hidden" : "imageSelectorContainer"}>
       <div className='imageToggle'>
-        <Button
-          variant="contained"
-          size="small"
-          style={{marginRight: '3px'}}
-          className={"arrowButtons"}
-          disabled={imageCount.current === 1 || changingImage}
-          onClick={() => {
-            setImageCount({...imageCount, current: imageCount.current-1})
-            debouncedChangeImage(imageCount.current-1)
-          }}
-        >
-          <ArrowBack />
-        </Button>
+        <div>
+          <Button
+            variant="contained"
+            size="small"
+            style={{marginRight: '3px'}}
+            className={"arrowButtons"}
+            disabled={imageCount.current === 1 || changingImage}
+            onClick={() => {
+              setImageCount({...imageCount, current: imageCount.current-1})
+              debouncedChangeImage(imageCount.current-1)
+            }}
+          >
+            <ArrowBack />
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            style={{marginLeft: '3px'}}
+            className={"arrowButtons"}
+            disabled={imageCount.current === imageCount.total || changingImage}
+            onClick={() => {
+              setImageCount({...imageCount, current: imageCount.current+1})
+              debouncedChangeImage(imageCount.current+1)
+            }}
+          >
+            <ArrowForward />
+          </Button>
+        </div>
         <div className="imageSelector">
           Image
           <TextField
@@ -104,19 +119,6 @@ function ImageSelector(props) {
           />
           of {imageCount.total}
         </div>
-        <Button
-          variant="contained"
-          size="small"
-          style={{marginLeft: '3px'}}
-          className={"arrowButtons"}
-          disabled={imageCount.current === imageCount.total || changingImage}
-          onClick={() => {
-            setImageCount({...imageCount, current: imageCount.current+1})
-            debouncedChangeImage(imageCount.current+1)
-          }}
-        >
-          <ArrowForward />
-        </Button>
       </div>
       <div className={changingImage ? "" : "hidden"}>
         <LinearProgress color="inherit" />

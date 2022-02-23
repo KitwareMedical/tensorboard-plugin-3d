@@ -2,7 +2,6 @@
   padding: 0px !important;
   background: rgba(128, 128, 128, 0.5) !important;
   border: solid 3px rgba(255, 255, 255, 0.3) !important;
-  width: 125px;
 }
 
 .css-fi4tqy {
@@ -29,6 +28,12 @@
   align-items: center;
 }
 
+.imageSelectorContainer {
+  right: 50px;
+  position: fixed;
+  top: 10px;
+}
+
 .imageToggle {
   display: flex;
   justify-content: space-between;
@@ -36,6 +41,7 @@
   border-radius: 3px;
   margin: 2px 0px;
   align-items: center;
+  flex-direction: column;
 }
 
 .layerIcon {
