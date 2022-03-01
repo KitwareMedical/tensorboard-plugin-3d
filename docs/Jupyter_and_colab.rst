@@ -114,12 +114,57 @@ flipping through available images and comparing results.
 
 Example Notebooks
 -----------------
-See the `spleen_segmentation`_ notebook for an example of viewing both the
-input data and output model from real world data, or the `unet_segmentation`_
-for a faster demonstration using sample data.
+**UNet Segmentation 3D Ignite**
 
-.. _spleen_segmentation: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb
-.. _unet_segmentation: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/unet_segmentation_3d_ignite.ipynb
+Quick example notebook demonstrating 3D segmentation with UNet. This notebook
+uses simple demo data and is a great starting place if you want to see the
+whole training process and output together without much wait.
+
+    .. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/unet_segmentation_3d_ignite.ipynb
+        :alt: Open in Colab
+
+**Spleen Segmentation 3D**
+
+*spleen_segmentation_3d*: Demonstrates 3D segmentation of a spleen dataset.
+Training in this notebook takes a bit longer than the UNet example but is a
+great example of segmentation and medical imaging. Run this notebook the whole
+way through to get a feel for the flow between the training process and viewing
+and analyzing the output model in Tensorboard.
+
+    .. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb
+        :alt: Open in Colab
+
+*cached_spleen_segmentation_3d*: This notebooks provides the cached data from
+the Spleen Segmentation notebook in order to allow you to quickly load and view
+the output models in TensorBoard. This is a great starting point if you would
+like to quickly begin viewing and analyzing actual medical data.
+
+    .. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/cached_spleen_segmentation_3d.ipynb
+        :alt: Open in Colab
+
+**Brats Segmentation 3D**
+
+*brats_segmentation_3d*: Demonstrates 3D segmentation of a brain tumor dataset.
+Like the Spleen Segementation, training in this notebook takes a bit longer to
+run but is another great example of segmentation and medical imaging. Run this
+notebook the whole way through to get a feel for the flow between the training
+process and viewing and analyzing the output model in Tensorboard.
+
+    .. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/brats_segmentation_3d.ipynb
+        :alt: Open in Colab
+
+*cached_brats_segmentation_3d*: This notebooks provides the cached data from
+the Brats Segmentation notebook so that you are able to quickly load and view
+the output models in TensorBoard. This is a great starting point if you would
+like to quickly begin viewing and analyzing actual medical data.
+
+    .. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/cached_brats_segmentation_3d.ipynb
+        :alt: Open in Colab
 
 .. image:: images/unet.gif
    :alt: UNet Demo
