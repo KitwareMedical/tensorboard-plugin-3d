@@ -22,14 +22,8 @@
   margin: 0px !important;
 }
 
-.imageSelector {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .imageSelectorContainer {
-  right: 50px;
+  left: 50%;
   position: fixed;
   top: 10px;
 }
@@ -41,7 +35,6 @@
   border-radius: 3px;
   margin: 2px 0px;
   align-items: center;
-  flex-direction: column;
 }
 
 .layerIcon {

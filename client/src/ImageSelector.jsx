@@ -74,51 +74,47 @@ function ImageSelector(props) {
   return (
     <div className={(!lastAddedData || imageCount.total < 2) ? "hidden" : "imageSelectorContainer"}>
       <div className='imageToggle'>
-        <div>
-          <Button
-            variant="contained"
-            size="small"
-            style={{marginRight: '3px'}}
-            className={"arrowButtons"}
-            disabled={imageCount.current === 1 || changingImage}
-            onClick={() => {
-              setImageCount({...imageCount, current: imageCount.current-1})
-              debouncedChangeImage(imageCount.current-1)
-            }}
-          >
-            <ArrowBack />
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            style={{marginLeft: '3px'}}
-            className={"arrowButtons"}
-            disabled={imageCount.current === imageCount.total || changingImage}
-            onClick={() => {
-              setImageCount({...imageCount, current: imageCount.current+1})
-              debouncedChangeImage(imageCount.current+1)
-            }}
-          >
-            <ArrowForward />
-          </Button>
-        </div>
-        <div className="imageSelector">
-          Image
-          <TextField
-            type="number"
-            className="imageInput"
-            InputLabelProps={{
-              shrink: true
-            }}
-            variant="filled"
-            size="small"
-            margin="dense"
-            disabled={changingImage}
-            value={imageCount.current}
-            onChange={(e) => {handleChange(e.target.value)}}
-          />
-          of {imageCount.total}
-        </div>
+        <Button
+          variant="contained"
+          size="small"
+          style={{marginRight: '3px'}}
+          className={"arrowButtons"}
+          disabled={imageCount.current === 1 || changingImage}
+          onClick={() => {
+            setImageCount({...imageCount, current: imageCount.current-1})
+            debouncedChangeImage(imageCount.current-1)
+          }}
+        >
+          <ArrowBack />
+        </Button>
+        Image
+        <TextField
+          type="number"
+          className="imageInput"
+          InputLabelProps={{
+            shrink: true
+          }}
+          variant="filled"
+          size="small"
+          margin="dense"
+          disabled={changingImage}
+          value={imageCount.current}
+          onChange={(e) => {handleChange(e.target.value)}}
+        />
+        of {imageCount.total}
+        <Button
+          variant="contained"
+          size="small"
+          style={{marginLeft: '3px'}}
+          className={"arrowButtons"}
+          disabled={imageCount.current === imageCount.total || changingImage}
+          onClick={() => {
+            setImageCount({...imageCount, current: imageCount.current+1})
+            debouncedChangeImage(imageCount.current+1)
+          }}
+        >
+          <ArrowForward />
+        </Button>
       </div>
       <div className={changingImage ? "" : "hidden"}>
         <LinearProgress color="inherit" />
