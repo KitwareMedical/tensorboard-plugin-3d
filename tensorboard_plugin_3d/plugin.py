@@ -76,8 +76,8 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         elif idx:
             data = self._find_next_images(idx)
         else:
-            # Grab the most recent run (event file)
-            data = self._find_most_recent()
+            # Grab the first run (event file)
+            data = self._find_next_images(1)
 
         response = {}
         for tag, images in data.items():
@@ -154,16 +154,6 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         self.current_run = (int(idx) - 1) % len(self._all_runs)
         run = self._all_runs[self.current_run]
         return self._all_images[run]
-
-    def _find_most_recent(self):
-        newest = -1
-        for run, tags in self._all_images.items():
-            times = [i.wall_time for v in tags.values() for i in v]
-            if newest < (new_time := max(times)):
-                most_recent = tags
-                newest = new_time
-                self.current_run = self._all_runs.index(run)
-        return most_recent
 
     def _find_all_images(self):
         """
