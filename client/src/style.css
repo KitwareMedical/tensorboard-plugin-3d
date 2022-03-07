@@ -2,7 +2,6 @@
   padding: 0px !important;
   background: rgba(128, 128, 128, 0.5) !important;
   border: solid 3px rgba(255, 255, 255, 0.3) !important;
-  width: 125px;
 }
 
 .css-fi4tqy {
@@ -23,10 +22,10 @@
   margin: 0px !important;
 }
 
-.imageSelector {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.imageSelectorContainer {
+  left: 50%;
+  position: fixed;
+  top: 10px;
 }
 
 .imageToggle {

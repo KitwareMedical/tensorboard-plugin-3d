@@ -72,7 +72,7 @@ function ImageSelector(props) {
   }
 
   return (
-    <div className={(!lastAddedData || imageCount.total < 2) && "hidden"}>
+    <div className={(!lastAddedData || imageCount.total < 2) ? "hidden" : "imageSelectorContainer"}>
       <div className='imageToggle'>
         <Button
           variant="contained"
@@ -87,23 +87,21 @@ function ImageSelector(props) {
         >
           <ArrowBack />
         </Button>
-        <div className="imageSelector">
-          Image
-          <TextField
-            type="number"
-            className="imageInput"
-            InputLabelProps={{
-              shrink: true
-            }}
-            variant="filled"
-            size="small"
-            margin="dense"
-            disabled={changingImage}
-            value={imageCount.current}
-            onChange={(e) => {handleChange(e.target.value)}}
-          />
-          of {imageCount.total}
-        </div>
+        Image
+        <TextField
+          type="number"
+          className="imageInput"
+          InputLabelProps={{
+            shrink: true
+          }}
+          variant="filled"
+          size="small"
+          margin="dense"
+          disabled={changingImage}
+          value={imageCount.current}
+          onChange={(e) => {handleChange(e.target.value)}}
+        />
+        of {imageCount.total}
         <Button
           variant="contained"
           size="small"
