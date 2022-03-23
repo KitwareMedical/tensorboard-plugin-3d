@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useActor } from '@xstate/react'
 import { Button, LinearProgress, TextField } from '@mui/material'
-import { ArrowBack, ArrowForward } from '@mui/icons-material'
+import { ArrowBack, ArrowForward, FirstPage, LastPage } from '@mui/icons-material'
 import {
   encodeScijsArray, fetchJSON, saveStateSettings,
   updateLabelSettings, updateStateSettings
@@ -74,6 +74,19 @@ function ImageSelector(props) {
   return (
     <div className={(!lastAddedData || imageCount.total < 2) ? "hidden" : "imageSelectorContainer"}>
       <div className='imageToggle'>
+      <Button
+          variant="contained"
+          size="small"
+          style={{marginRight: '3px'}}
+          className={"arrowButtons"}
+          disabled={imageCount.current === 1 || changingImage}
+          onClick={() => {
+            setImageCount({...imageCount, current: 1})
+            debouncedChangeImage(1)
+          }}
+        >
+          <FirstPage />
+        </Button>
         <Button
           variant="contained"
           size="small"
@@ -114,6 +127,19 @@ function ImageSelector(props) {
           }}
         >
           <ArrowForward />
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          style={{marginLeft: '3px'}}
+          className={"arrowButtons"}
+          disabled={imageCount.current === imageCount.total || changingImage}
+          onClick={() => {
+            setImageCount({...imageCount, current: imageCount.total})
+            debouncedChangeImage(imageCount.total)
+          }}
+        >
+          <LastPage />
         </Button>
       </div>
       <div className={changingImage ? "" : "hidden"}>
