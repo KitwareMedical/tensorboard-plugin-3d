@@ -42,7 +42,7 @@ setuptools.setup(
   },
   entry_points={
     "tensorboard_plugins": [
-      "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorboardPlugin3D",
+      "tensorboard_3d = tensorboard_plugin_3d.plugin:TensorBoardPlugin3D",
     ],
   },
   install_requires=["tensorflow"],

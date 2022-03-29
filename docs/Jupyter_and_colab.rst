@@ -4,7 +4,7 @@ JupyterLab and Colab Notebooks
 
 Installation
 ------------
-To install the TensorboardPlugin3D python package inside the notebook:
+To install the TensorBoardPlugin3D python package inside the notebook:
 
     .. code-block::
 
@@ -130,7 +130,7 @@ whole training process and output together without much wait.
 Training in this notebook takes a bit longer than the UNet example but is a
 great example of segmentation and medical imaging. Run this notebook the whole
 way through to get a feel for the flow between the training process and viewing
-and analyzing the output model in Tensorboard.
+and analyzing the output model in TensorBoard.
 
     .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb
@@ -151,7 +151,7 @@ like to quickly begin viewing and analyzing actual medical data.
 Like the Spleen Segementation, training in this notebook takes a bit longer to
 run but is another great example of segmentation and medical imaging. Run this
 notebook the whole way through to get a feel for the flow between the training
-process and viewing and analyzing the output model in Tensorboard.
+process and viewing and analyzing the output model in TensorBoard.
 
     .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/brats_segmentation_3d.ipynb

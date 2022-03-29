@@ -1,4 +1,4 @@
-TensorboardPlugin3D - 3D Tensor Visualization
+TensorBoardPlugin3D - 3D Tensor Visualization
 ===============================================
 
 [![PyPI](https://img.shields.io/pypi/v/tensorboard-plugin-3d.svg)](https://pypi.python.org/pypi/tensorboard-plugin-3d)
@@ -9,8 +9,8 @@ TensorboardPlugin3D - 3D Tensor Visualization
 Introduction
 ------------
 
-TensorboardPlugin3D is an open-source Tensorboard plugin that supports
-visualizing 3D output within the Tensorboard application, JupyterLab, and
+TensorBoardPlugin3D is an open-source TensorBoard plugin that supports
+visualizing 3D output within the TensorBoard application, JupyterLab, and
 Google Colab.
 
 Installation
@@ -24,7 +24,7 @@ pip install tensorboard-plugin-3d
 
 MONAI Notebook Examples
 -----------------
-The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existing PyTorch medical DL program and demonstrates using TensorboardPlugin3D to view an image with a label to show the input data (shown in the first image) or to compare the model output with the input. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
+The Spleen Segmentation 3D tutorial shows how to integrate MONAI into an existing PyTorch medical DL program and demonstrates using TensorBoardPlugin3D to view an image with a label to show the input data (shown in the first image) or to compare the model output with the input. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/spleen_segmentation_3d.ipynb)
 
 Get started with a quick view of the output data with the cached notebook. [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KitwareMedical/tensorboard-plugin-3d/blob/main/demo/notebook/cached_spleen_segmentation_3d.ipynb)
 ![Spleen Image with Label](https://github.com/KitwareMedical/tensorboard-plugin-3d/blob/main/docs/images/spleen_with_label.png?raw=true)

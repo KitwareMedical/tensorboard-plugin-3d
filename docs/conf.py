@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'TensorboardPlugin3D'
+project = 'TensorBoardPlugin3D'
 copyright = '2022, Kitware, Inc.'
 author = 'Kitware, Inc.'
 

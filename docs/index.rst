@@ -1,13 +1,13 @@
-.. TensorboardPlugin3D documentation master file, created by
+.. TensorBoardPlugin3D documentation master file, created by
    sphinx-quickstart on Tue Jan 11 16:45:33 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Tensorboard Plugin 3D's documentation!
+Welcome to TensorBoard Plugin 3D's documentation!
 =================================================
 
-TensorboardPlugin3D is an open-source Tensorboard plugin that supports
-visualizing 3D output within the Tensorboard application, JupyterLab, and
+TensorBoardPlugin3D is an open-source TensorBoard plugin that supports
+visualizing 3D output within the TensorBoard application, JupyterLab, and
 Google Colab. This plugin frontend is built using ITK/VTK Viewer components.
 
 To install the stable python package:
