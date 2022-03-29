@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Tests the Tensorboard images plugin."""
+"""Tests the TensorBoard images plugin."""
 
 
 import collections.abc
@@ -36,13 +36,13 @@ tf.compat.v1.disable_v2_behavior()
 
 
 @test_util.run_all_in_graph_and_eager_modes
-class Tensorboard3DPluginTest(tf.test.TestCase):
+class TensorBoard3DPluginTest(tf.test.TestCase):
     def setUp(self):
         super().setUp()
         logdir, multiplexer = self._gather_data()
         provider = data_provider.MultiplexerDataProvider(multiplexer, logdir)
         ctx = base_plugin.TBContext(logdir=logdir, data_provider=provider)
-        self.plugin = tb_3d_plugin.TensorboardPlugin3D(ctx)
+        self.plugin = tb_3d_plugin.TensorBoardPlugin3D(ctx)
         wsgi_app = application.TensorBoardWSGI([self.plugin])
         self.server = werkzeug_test.Client(wsgi_app, wrappers.Response)
         self.routes = self.plugin.get_plugin_apps()

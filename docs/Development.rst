@@ -38,7 +38,7 @@ This will install and build the frontend and link the plugin into your
 virtualenv.
 
 
-Starting Tensorboard
+Starting TensorBoard
 ---------------------
 Run the following, pointing to the log directory you would like to use:
 

@@ -13,21 +13,21 @@ from tensorboard.plugins import base_plugin
 def decorate_headers(func):
     def wrapper(*args, **kwargs):
         headers = func(*args, **kwargs)
-        headers.extend(TensorboardPlugin3D.headers)
+        headers.extend(TensorBoardPlugin3D.headers)
         return headers
     return wrapper
 
 exceptions.HTTPException.get_headers = decorate_headers(exceptions.HTTPException.get_headers)
 
 
-class TensorboardPlugin3D(base_plugin.TBPlugin):
+class TensorBoardPlugin3D(base_plugin.TBPlugin):
     """TensorBoard plugin for 3D rendering."""
 
     plugin_name = "tensorboard_plugin_3d"
     headers = [("X-Content-Type-Options", "nosniff")]
 
     def __init__(self, context):
-        """Instantiates TensorboardPlugin3D.
+        """Instantiates TensorBoardPlugin3D.
 
         Args:
           context: A base_plugin.TBContext instance.
@@ -147,7 +147,7 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         except IOError:
             raise exceptions.NotFound("404 Not Found")
         return werkzeug.Response(
-            contents, content_type=mimetype, headers=TensorboardPlugin3D.headers
+            contents, content_type=mimetype, headers=TensorBoardPlugin3D.headers
         )
 
     def _find_next_images(self, idx):
@@ -189,7 +189,7 @@ class TensorboardPlugin3D(base_plugin.TBPlugin):
         return base_plugin.FrontendMetadata(
             es_module_path="/index.js",
             disable_reload=True,
-            tab_name="Tensorboard 3D"
+            tab_name="TensorBoard 3D"
         )
 
     @wrappers.Request.application
