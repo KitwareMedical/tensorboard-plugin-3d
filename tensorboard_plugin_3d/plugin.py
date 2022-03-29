@@ -116,7 +116,8 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
             run = event.split('/')[-1]
             ea = event_accumulator.EventAccumulator(event)
             ea.Reload()
-            if tags := ea.Tags()['images']:
+            tags = ea.Tags()['images']
+            if tags:
                 run_info[run] = tags
         return http_util.Respond(request, run_info, "application/json")
 
