@@ -119,7 +119,7 @@ export async function updateLabelSettings(name, labelImageToggleWeight, send) {
 }
 
 
-export async function updateStateSettings(name, component, send) {
+export async function updateStateSettings(name, component, colorRange, send) {
   const state = await fetchJSON('../tensorboard_plugin_3d/fetchState');
   if (isEmpty(state))
     return
@@ -152,14 +152,6 @@ export async function updateStateSettings(name, component, send) {
     data: {name, blendMode: state.actorContext.blendMode}
   })
   send({
-    type: 'IMAGE_COLOR_RANGE_CHANGED',
-    data: {
-      name,
-      component: component,
-      range: state.actorContext.colorRange
-    }
-  })
-  send({
     type: 'IMAGE_GRADIENT_OPACITY_SCALE_CHANGED',
     data: {name, gradientOpacityScale: state.actorContext.gradientOpacityScale}
   })
@@ -186,6 +178,17 @@ export async function updateStateSettings(name, component, send) {
       component: component,
       range: state.actorContext.piecewiseFunctions.range,
       nodes: state.actorContext.piecewiseFunctions.nodes
+    }
+  })
+  var rangeMin = Math.max(colorRange[0], state.actorContext.colorRange[0]);
+  var rangeMax = Math.min(colorRange[1], state.actorContext.colorRange[1]);
+  console.log('range: ', rangeMin, rangeMax);
+  send({
+    type: 'IMAGE_COLOR_RANGE_CHANGED',
+    data: {
+      name,
+      component: component,
+      range: [rangeMin, rangeMax]
     }
   })
 }
