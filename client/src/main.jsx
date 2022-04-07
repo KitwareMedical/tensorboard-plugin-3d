@@ -29,6 +29,11 @@ function modifiedCreateInterface(context) {
     context.uiGroups = new Map()
   }
 
+  if (window.loading) {
+    const elem = document.getElementById('loadingText')
+    elem.style.display = 'none'
+  }
+
   ReactDOM.render(
     <React.StrictMode>
       <CollapseUIButton service={ context.service }/>

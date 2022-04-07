@@ -19,6 +19,12 @@ function ImageSelector(props) {
   const component = state.context.images.selectedComponent;
   const actorContext = state.context.images.actorContext.get(name)
 
+  useEffect(() => {
+    if (actorContext && window.loading) {
+      toggleProgressCircle(false)
+    }
+  }, [actorContext])
+
   useEffect(async() => {
     const counts = await fetchJSON(`../tensorboard_plugin_3d/images/count`);
     setImageCount(counts);
@@ -35,6 +41,12 @@ function ImageSelector(props) {
       updateStateSettings(name, component, colorRange, send);
     }
   }, [name, component, actorContext])
+
+  const toggleProgressCircle = (state) => {
+    window.loading = state
+    let elem = document.getElementById('loading')
+    elem.style.display = state ? 'block' : 'none'
+  }
 
   const changeImage = async (idx) => {
     if (idx < 1)
@@ -53,6 +65,7 @@ function ImageSelector(props) {
       }
       return image_data
     })
+    toggleProgressCircle(true)
     window.itkVtkViewer.createViewer(
       document.querySelector('.content'),
       {
