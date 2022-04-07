@@ -182,7 +182,6 @@ export async function updateStateSettings(name, component, colorRange, send) {
   })
   var rangeMin = Math.max(colorRange[0], state.actorContext.colorRange[0]);
   var rangeMax = Math.min(colorRange[1], state.actorContext.colorRange[1]);
-  console.log('range: ', rangeMin, rangeMax);
   send({
     type: 'IMAGE_COLOR_RANGE_CHANGED',
     data: {
