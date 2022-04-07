@@ -30,9 +30,11 @@ function ImageSelector(props) {
   }, [actorContext?.labelImageName])
 
   useEffect(() => {
-    if (name && component >= 0)
-      updateStateSettings(name, component, send);
-  }, [name, component])
+    if (name && component >= 0 && actorContext?.colorRanges) {
+      const colorRange = actorContext.colorRanges.get(component);
+      updateStateSettings(name, component, colorRange, send);
+    }
+  }, [name, component, actorContext])
 
   const changeImage = async (idx) => {
     if (idx < 1)
