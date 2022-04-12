@@ -30,6 +30,7 @@
     "material-ui": "^0.20.2",
     "ndarray-pack": "^1.2.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "regenerator-runtime": "^0.13.9"
   }
 }
