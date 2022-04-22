@@ -1,5 +1,3 @@
-import os
-import glob
 from pathlib import Path
 
 import tensorflow as tf
@@ -113,10 +111,10 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
         {runName: [tagName, tagName, ...]}
         """
         run_info = {}
-        events = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        events = sorted(Path(self._logdir).glob('*'))
         for event in events:
-            run = event.split('/')[-1]
-            ea = event_accumulator.EventAccumulator(event)
+            run = event.name
+            ea = event_accumulator.EventAccumulator(str(event))
             ea.Reload()
             tags = ea.Tags()['images']
             if tags:
@@ -133,7 +131,7 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
 
         Checks the normpath to guard against path traversal attacks.
         """
-        filename = os.path.basename(request.path)
+        filename = Path(request.path).name
         return self._serve_static(filename)
 
     @wrappers.Request.application
@@ -150,7 +148,7 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
         return self._serve_static(filename)
 
     def _serve_static(self, filename):
-        extension = os.path.splitext(filename)[1]
+        extension = Path(filename).suffix
         if extension == '.html':
             mimetype = 'text/html'
         elif extension == '.css':
@@ -161,7 +159,7 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
             mimetype = 'application/javascript'
         else:
             mimetype = 'application/octet-stream'
-        filepath = os.path.join(os.path.dirname(__file__), 'static', filename)
+        filepath = Path(__file__).parent / 'static' / filename
         try:
             with open(filepath, 'rb') as infile:
                 contents = infile.read()
@@ -183,10 +181,10 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
         """
         self._all_images = {}
         images_found = False
-        event_files = sorted(glob.glob(os.path.join(self._logdir, '*')))
+        event_files = sorted(Path(self._logdir).glob('*'))
         for event in event_files:
-            run = event.split('/')[-1]
-            ea = event_accumulator.EventAccumulator(event)
+            run = event.name
+            ea = event_accumulator.EventAccumulator(str(event))
             ea.Reload()
             tags = ea.Tags()['images']
             for tag in tags:
