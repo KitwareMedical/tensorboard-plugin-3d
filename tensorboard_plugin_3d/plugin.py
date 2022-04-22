@@ -1,5 +1,6 @@
 import os
 import glob
+from pathlib import Path
 
 import tensorflow as tf
 
@@ -45,6 +46,7 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
         return {
             "/index.js": self._serve_static_file,
             "/index.html": self._serve_static_file,
+            "/itk/*": self._serve_static_itk,
             "/images/current": self._serve_image,
             "/images/count": self._serve_image_count,
             "/tags": self._serve_tags,
@@ -132,12 +134,30 @@ class TensorBoardPlugin3D(base_plugin.TBPlugin):
         Checks the normpath to guard against path traversal attacks.
         """
         filename = os.path.basename(request.path)
+        return self._serve_static(filename)
+
+    @wrappers.Request.application
+    def _serve_static_itk(self, request):
+        """Returns a resource file from the static asset directory.
+
+        Requests from the frontend have a path in this form:
+        /data/plugin/tensorboard_plugin_3d/static/foo
+        This serves the appropriate asset: ./static/foo.
+
+        Checks the normpath to guard against path traversal attacks.
+        """
+        filename = Path(f'itk/{request.path.rsplit("itk")[-1]}')
+        return self._serve_static(filename)
+
+    def _serve_static(self, filename):
         extension = os.path.splitext(filename)[1]
         if extension == '.html':
             mimetype = 'text/html'
         elif extension == '.css':
             mimetype = 'text/css'
         elif extension == '.js':
+            mimetype = 'application/javascript'
+        elif extension == '.wasm':
             mimetype = 'application/javascript'
         else:
             mimetype = 'application/octet-stream'
