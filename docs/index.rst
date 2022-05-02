@@ -17,9 +17,8 @@ To install the stable python package:
 
          $ pip install tensorboard-plugin-3d
 
-.. video:: _static/toggle_demo.mp4
-   :autoplay:
-   :nocontrols:
+.. image:: images/toggle_demo.gif
+   :alt: Output model with input
 
 .. toctree::
    :maxdepth: 2
