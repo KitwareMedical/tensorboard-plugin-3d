@@ -8,7 +8,7 @@ To install the TensorBoardPlugin3D python package:
 
 .. code-block::
 
-    $ pip install tensorboard_plugin_3d
+    $ pip install tensorboard-plugin-3d
 
 Usage
 -----
@@ -27,12 +27,15 @@ Select the log directory that contains your 3D image data and run:
 
     $ tensorboard --logdir ~/path/to/logdir
 
-If you'd like to test the plugin with some sample data you can set the `logdir`
-path to the test data:
+If you'd like to test the plugin with some sample data you can `download`_ the
+cached spleen segmentation data, extract the directory to the location you'd
+like, and then point to the data:
+
+.. _download: https://drive.google.com/uc?export=download&id=1VRCEwo7tCzh3ys3lJj6UwAcQ4i68md4b
 
 .. code-block::
 
-    $ tensorboard --logdir ~/path/to/logdir/test/data
+    $ tensorboard --logdir ~/path/to/extraction/location/demo_spleen_data
 
 Open TensorBoard and select the ``TensorBoard 3D`` tab.
 

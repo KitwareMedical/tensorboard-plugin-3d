@@ -8,13 +8,13 @@ To install the TensorBoardPlugin3D python package inside the notebook:
 
     .. code-block::
 
-        !pip install tensorboard_plugin_3d
+        !pip install tensorboard-plugin-3d
 
 Usage
 -----
 
 This documentation uses the ``spleen_segmentation_3d`` tutorial notebook
-provided by MONAI as the starting point and demonstrates how to expand on the
+provided by MONAI as a starting point and demonstrates how to expand on the
 notebook to take advantage of the 3D plugin with only a few additional lines.
 See the bottom of this page for links to available example notebooks.
 
@@ -23,11 +23,16 @@ Plot Images
 
 MONAI provides ``plot_2d_or_3d_image`` and the related ignite handler to plot
 the 3D image in TensorBoard. Originally the output model and input image and
-label could only be visualized with matplotlib. This limited the view to a
-single slice though.
+label could only be visualized with matplotlib which limited the view to a
+single slice at a time.
 
 .. image:: images/original_spleen_cell.png
-   :alt: Original Spleen Visualization Cells
+    :alt: Original Spleen Visualization Cells
+    :align: center
+
+.. image:: images/old_output.png
+    :alt: Original output as single slice of from each volume
+    :align: center
 
 For the purposes of this tutorial we will write out multiple views to get an
 idea of the different ways we can visualize data. Outside of the loop (above
@@ -38,12 +43,14 @@ selecting which data to display.
 
 .. image:: images/create_directories.png
     :alt: Create direct for TensorBoard plots
+    :align: center
 
 Within the loop we can then add the calls to ``plot_2d_or_3d_image`` to create
 the event files that TensorBoard will need.
 
 .. image:: images/write_tensorboard_images.png
     :alt: Plot images for TensorBoard
+    :align: center
 
 The call to ``plot_2d_or_3d_image`` takes several parameters:
 
@@ -107,6 +114,7 @@ an option to toggle between them or jump to a specific image.
 
 .. image:: images/toggle_data.png
     :alt: Toggle Image Options
+    :align: center
 
 Any and all settings that are applied to an image are carried over to the next
 image as well. This allows you to get the vis settings just right before
@@ -167,4 +175,5 @@ like to quickly begin viewing and analyzing actual medical data.
         :alt: Open in Colab
 
 .. image:: images/unet.gif
-   :alt: UNet Demo
+    :alt: UNet Demo
+    :align: center

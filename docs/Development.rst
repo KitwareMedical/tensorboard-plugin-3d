@@ -22,20 +22,20 @@ In a virtualenv with TensorBoard installed, run:
 
     .. code-block::
 
-        python setup.py develop
-
-
-Changes to the client
----------------------
-If you have made changes to the client you will need to run the following
-command to update the static html file:
-
-    .. code-block::
-
         python setup.py build_client develop
 
 This will install and build the frontend and link the plugin into your
 virtualenv.
+
+Changes to the client
+---------------------
+If you have made changes to the client you will need to re-run the setup python
+script and the build_client command to re-build the client and update the
+static file.
+
+    .. code-block::
+
+        python setup.py build_client develop
 
 
 Starting TensorBoard
