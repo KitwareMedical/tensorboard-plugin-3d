@@ -10,8 +10,8 @@ Introduction
 ------------
 
 TensorBoardPlugin3D is an open-source TensorBoard plugin that supports
-visualizing 3D output within the TensorBoard application, JupyterLab, and
-Google Colab.
+visualizing 3D output within the TensorBoard application, JupyterLab,
+Google Colab, and SageMaker.
 
 Installation
 ------------

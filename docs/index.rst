@@ -7,16 +7,17 @@ Welcome to TensorBoard Plugin 3D's documentation!
 =================================================
 
 TensorBoardPlugin3D is an open-source TensorBoard plugin that supports
-visualizing 3D output within the TensorBoard application, JupyterLab, and
-Google Colab. This plugin frontend is built using ITK/VTK Viewer components.
+visualizing 3D output within the TensorBoard application, JupyterLab,
+Google Colab, and SageMaker. This plugin frontend is built using ITK/VTK Viewer
+components.
 
 To install the stable python package:
 
    .. code-block:: bash
 
-         $ pip install tensorboard_plugin_3d
+         $ pip install tensorboard-plugin-3d
 
-.. image:: images/label_with_output.gif
+.. image:: images/toggle_demo.gif
    :alt: Output model with input
 
 .. toctree::
