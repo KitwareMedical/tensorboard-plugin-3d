@@ -1,6 +1,7 @@
 import materialUIMachineOptions from 'itk-viewer-material-ui/src/materialUIMachineOptions'
 import modifiedCreateInterface from './main'
 import { encodeScijsArray, fetchJSON } from './utils'
+import createViewer from 'itk-vtk-viewer/src/createViewer'
 
 const uiMachineOptions = { ...materialUIMachineOptions }
 
@@ -11,7 +12,7 @@ uiMachineOptions.actions = uiMachineActions
 
 const container = document.querySelector('.content')
 
-async function createViewer() {
+async function init() {
   const img_data = await fetchJSON('../tensorboard_plugin_3d/images/current').then(response => {
     let image_data = {image: encodeScijsArray(response.image)}
     if (response.label) {
@@ -19,11 +20,11 @@ async function createViewer() {
     }
     return image_data
   })
-  window.itkVtkViewer.createViewer(container,
+  createViewer(container,
     {
       ...img_data,
       rotate: false,
       config: { uiMachineOptions },
     })
 }
-createViewer()
+init()

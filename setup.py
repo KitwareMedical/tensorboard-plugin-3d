@@ -22,8 +22,8 @@ class build_client(setuptools.Command):
     subprocess.run(["yarn", "build:copy"], check=True)
     os.chdir(cwd)
 
-this_directory = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+this_directory = Path(__file__).parent.absolute()
+with open(this_directory/'README.md', encoding='utf-8') as f:
   long_description = f.read()
 
 setuptools.setup(

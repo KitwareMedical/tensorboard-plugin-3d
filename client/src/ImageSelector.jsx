@@ -8,6 +8,7 @@ import {
 } from './utils'
 import './style.css'
 import { debounce } from 'lodash'
+import createViewer from 'itk-vtk-viewer/src/createViewer'
 
 function ImageSelector(props) {
   const { service } = props
@@ -66,7 +67,7 @@ function ImageSelector(props) {
       return image_data
     })
     toggleProgressCircle(true)
-    window.itkVtkViewer.createViewer(
+    createViewer(
       document.querySelector('.content'),
       {
         ...img_data,
