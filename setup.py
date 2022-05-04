@@ -38,7 +38,15 @@ setuptools.setup(
   },
   packages=["tensorboard_plugin_3d"],
   package_data={
-    "tensorboard_plugin_3d": ["static/**"],
+    "tensorboard_plugin_3d": [
+      "static/**",
+      "static/itk/image-io/**",
+      "static/itk/mesh-io/**",
+      "static/itk/pipeline/**",
+      "static/itk/web-workers/**",
+      "static/itk/web-workers/bundles/**",
+      "static/itk/web-workers/min-bundles/**",
+    ],
   },
   entry_points={
     "tensorboard_plugins": [
